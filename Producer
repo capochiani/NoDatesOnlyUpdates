@@ -1,0 +1,58 @@
+package com.fc.kafka;
+
+/*
+ * Un producer Kafka viene istanziato fornendo una serie di coppie key-val come configurazione.
+ * Usiamo un serializzatore predefinito chiamato StringSerializer per la serializzazione di chiavi e valori. 
+ * Questi serializzatori sono usati per conversione di oggetti in byte. 
+ * Analogamente, fc-broker è il nome del broker. 
+ * 
+ * Infine, è necessaria la funzione close per evitare perdite di risorse.
+ * 
+ * FC
+ */
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+
+import org.apache.kafka.clients.KafkaClient;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.util.Properties;
+
+public class Producer {
+	
+	public static void main(String[] args) {
+		
+		Properties properties = new Properties();
+		properties.put("bootstrap.servers", "localhost:9092");
+		
+		properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+		properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+		KafkaProducer<String, String> kafkaProducer = new KafkaProducer<String, String>(properties);
+		try {
+			for (int i = 0; i < 10; i++) {
+				System.out.println(i);
+				/*
+				 * Ora è il momento di produrre un messaggio nell'argomento fc-partitions-topic. 
+				 * Ciascun producer  può specificare la partition in cui desidera inviare il messaggio 
+				 * o consentire al broker kafka di decidere in quale partizione allocare i messaggi.
+				 * Round Robin.
+				*/
+				
+				kafkaProducer.send(new ProducerRecord<String, String>("fc-partitions-topic", Integer.toString(i),
+						"Message - " + i));
+				 
+				// kafkaProducer.send(new ProducerRecord("fc-broker", Integer.toString(i), "Message - " + i ));
+			}
+			// I messaggi vengono inviati al topic.
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			kafkaProducer.close();
+		}
+	}
+}
+
