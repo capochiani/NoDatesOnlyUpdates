@@ -1,0 +1,59 @@
+package com.fc.kafka;
+/*
+ * Di seguito è riportato un esempio di esecuzione Consumer.java. 
+ * 
+ * Un consumer viene istanziato fornendo l'oggetto Properties come configurazione. 
+ * Simile a StringSerialization (nel Producer) abbiamo StringDeserializer (nel Consumer) 
+ * per convertire i byte in Object.group.id
+ * 
+ * Questo valore diventa importante per il broker kafka quando abbiamo un consumer group. 
+ * Con questo ID, il broker kafka garantisce che lo stesso messaggio non venga consumato più di 
+ * una volta da consumer group, il che significa che un messaggio 
+ * può essere consumato da un solo membro di un consumer group.
+ *
+ *
+ * Il risultato in console è:
+ * 
+ * Topic - fc-movietest, Partition - 0, Value: test message - 0
+ * Topic - fc-movietest, Partition - 0, Value: test message - 1
+ * Topic - fc-movietest, Partition - 0, Value: test message - 2
+ */
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+public class Consumer {
+
+	public static void main(String[] args) {
+		
+		Properties properties = new Properties();
+		properties.put("bootstrap.servers", "localhost:9092");
+		
+		properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+		properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+	 
+		properties.put("group.id", "test-MOVIE-group");
+
+		KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<String, String>(properties);
+		List<String> topics = new ArrayList<String>();
+		topics.add("fc-movietest");
+		kafkaConsumer.subscribe(topics);
+		try {
+			while (true) {
+				ConsumerRecords<String, String> records = kafkaConsumer.poll(10);
+				for (ConsumerRecord<String, String> record : records) {
+					System.out.println(String.format("Topic - %s, Partition - %d, Value: %s", record.topic(),
+							record.partition(), record.value()));
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			kafkaConsumer.close();
+		}
+	}
+}
