@@ -1,0 +1,7 @@
+# Apache Kafka MovieDemo: CONSUMER/PRODUCER
+
+In questo tutorial, svilupperemo un'applicazione di esempio apache Kafka Java usando Maven. 
+Configureremo apache Kafka e Zookeeper nel nostro computer locale e creeremo un argomento di prova con più partizioni in un broker Kafka. 
+
+Avremo quindi un Consumer e un Producer separati in Java che produrranno un messaggio sull'argomento e consumeranno un messaggio. 
+Vediamo come produrre messaggi per più partizioni di un singolo argomento e come quei messaggi vengono consumati dal consumer.
