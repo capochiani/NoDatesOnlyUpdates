@@ -5,3 +5,11 @@ Configureremo apache Kafka e Zookeeper nel nostro computer locale e creeremo un 
 
 Avremo quindi un Consumer e un Producer separati in Java che produrranno un messaggio sull'argomento e consumeranno un messaggio. 
 Vediamo come produrre messaggi per più partizioni di un singolo argomento e come quei messaggi vengono consumati dal consumer.
+
+
+Requirements
+
+    JDK
+    IntelliJ IDEA /Eclipse
+    Apache Kafka
+    Apache Zookeeper
